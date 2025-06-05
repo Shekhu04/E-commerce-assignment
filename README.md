@@ -68,9 +68,12 @@ public/
 
 You can download an iPhone 15 image from Google and save it with the filename iphone.jpg.
 
-### 5. Run Cypress
+## Run Cypress Tests (CLI)
 
-npx cypress open
+### 1. Install Cypress
+```bash
+npm install cypress --save-dev
+
 
 Then select the test file and run it from the Cypress Test Runner.
 
