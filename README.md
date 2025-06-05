@@ -1,4 +1,4 @@
-# 9 Product Auth App
+#  Product Auth App
 
 A beginner-level React app that displays a product (iPhone 15) and allows users to view more details **only after logging in**. It uses Material UI for UI components, React Router for navigation, and Context API with `localStorage` for managing authentication. Cypress is used for end-to-end testing.
 
