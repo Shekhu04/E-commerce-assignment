@@ -1,80 +1,69 @@
-#  Product Auth App
+# 🛒 Product Auth App
 
-A beginner-level React app that displays a product (iPhone 15) and allows users to view more details **only after logging in**. It uses Material UI for UI components, React Router for navigation, and Context API with `localStorage` for managing authentication. Cypress is used for end-to-end testing.
+A beginner-friendly React project that showcases a product (iPhone 15) and allows users to **view more details** and **add the product to cart**, but only **after logging in**. It uses Material UI for UI, Context API for auth state, and Cypress for end-to-end testing.
 
 ---
 
 ##  Features
 
--  Login & Logout using React Context
--  Authentication stored in localStorage (persists on refresh)
--  View product details only after login
+-  User login/logout using React Context
+-  Authentication persisted using localStorage
+-  Protected product details – only visible after login
 -  Protected routes using custom `ProtectedRoute`
--  Styled using Material UI (MUI)
--  End-to-End testing with Cypress
+-  Styled with Material UI (MUI)
+-  End-to-End testing with Cypress (UI + auth flow)
 
 ---
 
-## Tech Stack
-- React
-- React Router DOM
-- Material UI (MUI)
-- Context API + localStorage
-- Cypress (for testing)
-  
----
+##  Tech Stack
 
-##  Folder Structure
-
-src/
-│
-├── components/
-│ ├── product.jsx 
-│ ├── login.jsx 
-│ ├── profile.jsx 
-│ └── navbar.jsx 
-│
-├── AuthContext.js 
-├── App.jsx 
-└── main.jsx
-
+- **React**
+- **React Router DOM**
+- **Material UI (MUI)**
+- **Context API + localStorage**
+- **Cypress** (for E2E testing)
 
 ---
+
+
+
 
 ## Getting Started
 
-### 1. Clone the repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Shekhu04/E-commerce-assignment.git
+cd E-commerce site
+
+---
+## Installation
 
 
-### 2. Install dependencies
-
-npm install
-
-### 3. Start the development server
+```bash
+  npm install
+```
+    
+## Start the development server
 
 npm start
 
-Open http://localhost:5173 in your browser.
+Open your browser at http://localhost:5173
+## Image Setup
 
-### 4. Image Setup
+Place an iPhone image in the public/ folder with the filename iphone.jpg.
+## Cypress Test Instructions (via CLI)
 
-Place an image named iphone.jpg inside your public/ folder:
+### 1.Install Cypress
 
-public/
-└── iphone.jpg
-
-You can download an iPhone 15 image from Google and save it with the filename iphone.jpg.
-
-## Run Cypress Tests (CLI)
-
-### 1. Install Cypress
-```bash
 npm install cypress --save-dev
 
+### 2. Open Cypress Test Runner
 
-Then select the test file and run it from the Cypress Test Runner.
+npx cypress open
 
+Use this to run tests via GUI interface.
 
+### 3. Run Tests in CLI 
+
+npx cypress run
