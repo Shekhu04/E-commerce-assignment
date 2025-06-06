@@ -5,6 +5,7 @@ import Product from "./components/product";
 import Login from "./components/login";
 import Profile from "./components/profile";
 import Navbar from "./components/navbar";
+import Cart from "./components/cart";
 
 import { AuthProvider, useAuth } from "./AuthContext";
 
@@ -34,6 +35,15 @@ const AppRoutes = () => {
             />
           }
         />
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <Cart />
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="/login" element={<Login />} />
         <Route
           path="/profile"

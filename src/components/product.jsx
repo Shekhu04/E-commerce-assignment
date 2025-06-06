@@ -7,73 +7,135 @@ import {
   CardMedia,
   Button,
   Box,
+  Grid,
 } from "@mui/material";
+import { useAuth } from "../AuthContext";
 
-const Product = ({ isAuthenticated }) => {
-  const [showDetails, setShowDetails] = useState(false);
+const Product = () => {
+  const { isAuthenticated, addToCart, cart } = useAuth();
+  const [addedItems, setAddedItems] = useState([]);
 
-  const handleViewMore = () => {
-    if (isAuthenticated) {
-      setShowDetails(true);
+  const products = [
+    {
+      id: 1,
+      name: "iPhone 15",
+      image: "iphone.jpg",
+      details: "Apple A17 Pro, 128GB, Dynamic Island",
+      price: 79990,
+      specs: [
+        "Camera: 48MP Main, 12MP Ultra-Wide",
+        "Battery: 20 hours video playback",
+        "Display: 6.1″ Super Retina XDR",
+      ],
+    },
+    {
+      id: 2,
+      name: "MacBook Pro",
+      image: "macbook.jpg",
+      details: "Apple M2 Pro, 16GB RAM, 512GB SSD",
+      price: 199990,
+      specs: [
+        "Display: 14″ Liquid Retina XDR",
+        "Processor: Apple M2 Pro",
+        "Battery: Up to 18 hours",
+      ],
+    },
+    {
+      id: 3,
+      name: "Apple Watch Series 9",
+      image: "watch.jpg",
+      details: "41mm Midnight Aluminum Case with Sport Band",
+      price: 41990,
+      specs: [
+        "Display: Always-On Retina",
+        "Battery: 18 hours",
+        "Sensors: Blood Oxygen, ECG, Heart Rate",
+      ],
+    },
+    {
+      id: 4,
+      name: "AirPods Pro (2nd Gen)",
+      image: "airpods.jpg",
+      details: "Active Noise Cancellation, MagSafe Charging Case",
+      price: 26990,
+      specs: [
+        "Audio: Adaptive Transparency",
+        "Battery: 6 hours (buds) + 30 hours (case)",
+        "Chip: Apple H2",
+      ],
+    },
+  ];
+
+  const handleAddToCart = (product) => {
+    if (isAuthenticated && !addedItems.includes(product.id)) {
+      addToCart(product);
+      setAddedItems((prev) => [...prev, product.id]);
     }
   };
 
-
   useEffect(() => {
     if (!isAuthenticated) {
-      setShowDetails(false);
+      setAddedItems([]);
     }
   }, [isAuthenticated]);
 
   return (
     <Container sx={{ mt: 4 }}>
-      <Card sx={{ maxWidth: 500, margin: "auto" }}>
-        <CardMedia
-          component="img"
-          image="iphone.jpg"
-          alt="iPhone 15"
-          sx={{
-            height: { xs: 250, sm: 300 },
-            objectFit: "cover",
-            width: "100%",
-          }}
-        />
-        <CardContent>
-          <Typography variant="h5" gutterBottom>
-            iPhone 15
-          </Typography>
-          <Typography color="text.secondary">
-            Apple A17 Pro, 128GB, Dynamic Island
-          </Typography>
+      <Grid container spacing={3}>
+        {products.map((product) => (
+          <Grid item xs={12} sm={6} md={6} lg={4} key={product.id}>
+            <Card sx={{ height: "100%" }}>
+              <CardMedia
+                component="img"
+                image={product.image}
+                alt={product.name}
+                sx={{ height: 250, objectFit: "cover" }}
+              />
+              <CardContent>
+                <Typography variant="h6">{product.name}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {product.details}
+                </Typography>
 
-          <Box textAlign="center" mt={2}>
-            <Button
-              variant="contained"
-              onClick={handleViewMore}
-              disabled={!isAuthenticated}
-            >
-              {isAuthenticated ? "View More" : "Login to View More"}
-            </Button>
-          </Box>
+                {isAuthenticated && (
+                  <Box mt={2}>
+                    {product.specs.map((line, idx) => (
+                      <Typography key={idx} variant="body2">
+                        {line}
+                      </Typography>
+                    ))}
+                    <Typography variant="body1" fontWeight="bold">
+                      Price: ₹{product.price.toLocaleString()}
+                    </Typography>
+                  </Box>
+                )}
 
-          {showDetails && (
-            <Box mt={2}>
-              <Typography variant="body1">
-                <strong>Camera:</strong> 48MP Main, 12MP Ultra-Wide
-              </Typography>
-              <Typography variant="body1">
-                <strong>Battery:</strong> 20 hours video playback
-              </Typography>
-              <Typography variant="body1">
-                <strong>Display:</strong> 6.1″ Super Retina XDR
-              </Typography>
-              <Typography variant="body1">
-                <strong>Price:</strong> ₹79,990
-              </Typography>
-            </Box>
-          )}
-        </CardContent>
-      </Card>
+                <Box mt={2}>
+                  {isAuthenticated ? (
+                    <Button
+                      variant={
+                        addedItems.includes(product.id)
+                          ? "outlined"
+                          : "contained"
+                      }
+                      onClick={() => handleAddToCart(product)}
+                      disabled={addedItems.includes(product.id)}
+                    >
+                      {addedItems.includes(product.id)
+                        ? "Added to Cart"
+                        : "Add to Cart"}
+                    </Button>
+                  ) : (
+                    <Typography color="error">
+                      Login to view & add to cart
+                    </Typography>
+                  )}
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
     </Container>
   );
 };
