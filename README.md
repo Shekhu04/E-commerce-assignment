@@ -44,6 +44,8 @@ cd E-commerce site
 ```bash
   npm install
 ```
+
+---
     
 ### 3. Start the development server
 
@@ -52,9 +54,13 @@ npm start
 ```
 
 Open your browser at http://localhost:5173
+
+---
 ### 4. Image Setup
 
 Place an iPhone. Macbook, Apple watch and AirPods image in the public/ folder with the filename iphone.jpg, macbook.jpg, watch.jpg, airpods.jpg.
+
+---
 ### 5. Cart Functionality
 
 - Products can be added to the cart only after login.
@@ -62,6 +68,8 @@ Place an iPhone. Macbook, Apple watch and AirPods image in the public/ folder wi
 - Cart items are listed on the Cart Page.
 
 - Cart state is preserved across authenticated routes.
+
+---
 ### 6. Cypress Test Instructions 
 
 ### 1.Install Cypress
@@ -125,6 +133,8 @@ Cypress.Commands.add("loginAndAddToCart", () => {
 });
 ```
 
+---
+
 
 
 
@@ -147,6 +157,9 @@ Cypress.Commands.add("loginAndAddToCart", () => {
 - Cannot view full product specs
 
 - Cannot access cart or checkout
+
+---
 ### 8. Author
 
 Shikhar Gupta
+---
