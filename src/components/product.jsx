@@ -93,9 +93,15 @@ const Product = () => {
               />
               <CardContent>
                 <Typography variant="h6">{product.name}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {product.details}
-                </Typography>
+                {isAuthenticated ? (
+                  <Typography variant="body2" color="text.secondary">
+                    {product.details}
+                  </Typography>
+                ) : (
+                  <Typography variant="body2" color="error">
+                    Login to view details
+                  </Typography>
+                )}
 
                 {isAuthenticated && (
                   <Box mt={2}>

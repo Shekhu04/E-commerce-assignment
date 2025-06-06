@@ -1,33 +1,56 @@
-describe("Product Access Based on Authentication", () => {
-  beforeEach(() => {
-    cy.visit("/");
-  });
+describe("Authenticated User Flow", () => {
+  it("logs in and accesses product page with cart functionality", () => {
+    // Visit login page
+    cy.visit("/login");
 
-  it(" Authenticated User Accesses Product and Logs In", () => {
-    
-    cy.contains("Login").click();
-    cy.contains("Login Page").should("exist");
+    // Click login button
     cy.contains("Click to Login").click();
-    cy.url().should("include", "/profile");
-    cy.contains("Welcome You are logged in.").should("exist");
-    cy.contains("Product").click();
-    cy.url().should("eq", `${Cypress.config().baseUrl}/`);
-    cy.contains("View More").should("be.enabled").click();
-    cy.contains("Camera:").should("exist");
-    cy.contains("Battery:").should("exist");
-    cy.contains("Display:").should("exist");
-    cy.contains("Price:").should("exist");
-  });
 
-  it("Unauthenticated User Sees Product Without Login", () => {
-    cy.contains("iPhone 15").should("be.visible");
-    cy.contains("Apple A17 Pro, 128GB, Dynamic Island").should("be.visible");
-    cy.get('img[alt="iPhone 15"]').should("have.attr", "src").and("include", "iphone.jpg");
-    cy.contains("Login to View More").should("be.visible").and("be.disabled");
-    cy.contains("Camera:").should("not.exist");
-    cy.contains("Battery:").should("not.exist");
-    cy.contains("Display:").should("not.exist");
-    cy.contains("Price:").should("not.exist");
+    // Should redirect to profile
+    cy.url().should("include", "/profile");
+    cy.contains("Welcome You are logged in.");
+
+    // Navigate to product page
+    cy.contains("Product").click();
+
+    // Confirm presence of product details
+    cy.contains("iPhone 15").should("exist");
+    cy.contains("Add to Cart").should("exist");
+
+    // Add product to cart
+    cy.contains("Add to Cart").first().click();
+
+    // Button should change to 'Added to Cart'
+    cy.contains("Added to Cart").should("exist");
+
+    // Navigate to cart
+    cy.contains(/Cart \(1\)/).click();
+
+    // Validate product is listed in cart
+    cy.contains("iPhone 15").should("exist");
+    cy.contains("Total: ₹79990").should("exist");
   });
-  
 });
+
+describe("Unauthenticated User Product Access", () => {
+  it("should show products but restrict adding to cart", () => {
+    // Visit product page directly
+    cy.visit("/");
+
+    // Ensure product names are visible
+    cy.contains("MacBook Pro").should("exist");
+    cy.contains("Apple Watch Series 9").should("exist");
+
+    // Cart and logout buttons should NOT exist
+    cy.contains("Cart").should("not.exist");
+    cy.contains("Logout").should("not.exist");
+
+    // Add to Cart should be replaced with Login warning
+    cy.contains("Login to view & add to cart").should("exist");
+
+    // Specs and price should not be visible
+    cy.contains("Apple A17 Pro").should("not.exist");
+    cy.contains("Price: ₹79,990").should("not.exist");
+  });
+});
+  
