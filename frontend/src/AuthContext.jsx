@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(true);
   };
 
-  // Logout function to clear token, cart, and reset states
+ 
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("cart");
