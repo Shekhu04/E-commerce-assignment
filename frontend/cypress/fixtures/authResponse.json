@@ -1,0 +1,9 @@
+{
+    "token": "mock-token",
+    "user": {
+      "firstName": "Shikhar",
+      "lastName": "Gupta",
+      "email": "shikhar@example.com"
+    }
+  }
+  

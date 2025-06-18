@@ -9,12 +9,13 @@ import {
   Box,
   Grid,
 } from "@mui/material";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../AuthContext"; // Custom hook to access authentication and cart context
 
 const Product = () => {
-  const { isAuthenticated, addToCart, cart } = useAuth();
-  const [addedItems, setAddedItems] = useState([]);
+  const { isAuthenticated, addToCart, cart } = useAuth(); // Get auth state and cart functions from context
+  const [addedItems, setAddedItems] = useState([]); // Track which items are already added to cart
 
+  // Static product data (normally fetched from backend)
   const products = [
     {
       id: 1,
@@ -66,13 +67,16 @@ const Product = () => {
     },
   ];
 
+  // Handle adding product to cart
   const handleAddToCart = (product) => {
+    // If user is authenticated and product not already added
     if (isAuthenticated && !addedItems.includes(product.id)) {
-      addToCart(product);
-      setAddedItems((prev) => [...prev, product.id]);
+      addToCart(product); // Add to global cart state
+      setAddedItems((prev) => [...prev, product.id]); // Mark as added
     }
   };
 
+  // Clear addedItems list if user logs out
   useEffect(() => {
     if (!isAuthenticated) {
       setAddedItems([]);
@@ -85,14 +89,19 @@ const Product = () => {
         {products.map((product) => (
           <Grid item xs={12} sm={6} md={6} lg={4} key={product.id}>
             <Card sx={{ height: "100%" }}>
+              {/* Product Image */}
               <CardMedia
                 component="img"
                 image={product.image}
                 alt={product.name}
                 sx={{ height: 250, objectFit: "cover" }}
               />
+
               <CardContent>
+                {/* Product Name */}
                 <Typography variant="h6">{product.name}</Typography>
+
+                {/* Product Details - only visible to authenticated users */}
                 {isAuthenticated ? (
                   <Typography variant="body2" color="text.secondary">
                     {product.details}
@@ -103,6 +112,7 @@ const Product = () => {
                   </Typography>
                 )}
 
+                {/* Specs and price - only visible to authenticated users */}
                 {isAuthenticated && (
                   <Box mt={2}>
                     {product.specs.map((line, idx) => (
@@ -116,6 +126,7 @@ const Product = () => {
                   </Box>
                 )}
 
+                {/* Add to cart or message */}
                 <Box mt={2}>
                   {isAuthenticated ? (
                     <Button
