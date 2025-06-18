@@ -1,29 +1,48 @@
-# 🛒 E-commerce Auth App
+# 🛒 E-Commerce Site (MERN Stack + Cypress Testing)
 
-A beginner-friendly React project that showcases products (iPhone 15, MacBook, Apple watch etc) and allows users to **view more details** and **add the product to cart**, but only **after logging in**. It uses Material UI for UI, Context API for auth state, and Cypress for end-to-end testing.
+This is a full-stack e-commerce application built with:
+
+- **Frontend:** React + Vite + MUI + Context API
+- **Backend:** Express + MongoDB + JWT Auth + Bcrypt
+- **Testing:** Cypress (E2E Tests)
 
 ---
 
 ## 🚀 Features
 
-- ✅ User Login/Logout using custom `AuthContext`
-- ✅ View product cards (e.g., iPhone 15)
-- ✅ Authenticated users can view more product details
-- ✅ Add to Cart (only if logged in)
-- ✅ Cart page with product list and checkout option
-- ✅ Navigation bar with protected routing
-- ✅ Cypress E2E tests for major flows
+✅ User Authentication (Signup/Login with JWT)  
+✅ Add to Cart (Protected functionality)  
+✅ Product Listing Page  
+✅ Cart Page with Checkout  
+✅ Responsive UI (MUI-based)  
+✅ Cypress E2E Tests with intercepts and fixtures
 
 ---
-## 🛠️ Tech Stack
 
-- **Frontend:** React + Vite
-- **Routing:** React Router
-- **UI Components:** Material UI
-- **State:** Local state and AuthContext
-- **Testing:** Cypress
+## 🧑‍💻 Tech Stack
+
+### Frontend
+- React + Vite
+- Material UI (MUI)
+- Axios
+- React Router DOM
+- Context API
+
+### Backend
+- Node.js + Express
+- MongoDB + Mongoose
+- JWT for authentication
+- Bcrypt for password hashing
+
+### Testing
+- Cypress (E2E testing)
+- Fixtures, Intercepts, Custom Commands
 
 ---
+
+
+
+
 
 
 
@@ -38,24 +57,35 @@ cd E-commerce site
 ```
 
 ---
-### 2. Installation
+### 2. Setup Backend
 
 
 ```bash
-  npm install
+cd backend
+npm install
+
+```
+#### Create a .env file
+```bash
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret_key
+PORT=5000
+```
+
+#### Run the backend
+```bash
+npm run dev
+```
+
+### 3. Setup Frontend
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
 ---
     
-### 3. Start the development server
-
-```bash
-npm start
-```
-
-Open your browser at http://localhost:5173
-
----
 ### 4. Image Setup
 
 Place an iPhone. Macbook, Apple watch and AirPods image in the public/ folder with the filename iphone.jpg, macbook.jpg, watch.jpg, airpods.jpg.
@@ -94,11 +124,6 @@ npx cypress open
 
 ```bash
 npx cypress run
-<<<<<<< HEAD
-
-
-pgnLqrX2cw9jOdyz
-=======
 ```
 
 - This runs all specs in headless mode
@@ -164,8 +189,56 @@ Cypress.Commands.add("loginAndAddToCart", () => {
 - Cannot access cart or checkout
 
 ---
-### 8. Author
+### 8. Sample Cypress Features Tested
+
+- Authenticated user login flow
+
+- Add to cart functionality
+
+- Cart page behavior
+
+- Checkout clears cart
+
+- Fixtures for user data
+
+- Intercepted API calls using cy.intercept
+
+---
+### 9. Sample Fixtures (frontend/cypress/fixtures/)
+
+user.json
+```bash
+{
+  "email": "shikhar@example.com",
+  "password": "123456",
+  "firstName": "Shikhar",
+  "lastName": "Gupta"
+}
+```
+
+authResponse.json
+```bash
+{
+  "token": "mocked-jwt-token",
+  "user": {
+    "email": "shikhar@example.com",
+    "firstName": "Shikhar",
+    "lastName": "Gupta"
+  }
+}
+```
+### 10. Future Improvements
+
+- Add user profile management
+
+- Integrate payment gateway
+
+- Add product search and filtering
+
+- Admin dashboard
+### Author
 
 Shikhar Gupta
----
->>>>>>> b03d8a2e516d20088d4249ee5ea443ac942a81cd
+
+
+
