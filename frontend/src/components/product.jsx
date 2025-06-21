@@ -9,74 +9,39 @@ import {
   Box,
   Grid,
 } from "@mui/material";
-import { useAuth } from "../AuthContext"; // Custom hook to access authentication and cart context
+import { useAuth } from "../AuthContext";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 const Product = () => {
-  const { isAuthenticated, addToCart, cart } = useAuth(); // Get auth state and cart functions from context
-  const [addedItems, setAddedItems] = useState([]); // Track which items are already added to cart
+  const { isAuthenticated, addToCart } = useAuth();
+  const [products, setProducts] = useState([]);
+  const [addedItems, setAddedItems] = useState([]);
+  const navigate = useNavigate();
 
-  // Static product data (normally fetched from backend)
-  const products = [
-    {
-      id: 1,
-      name: "iPhone 15",
-      image: "iphone.jpg",
-      details: "Apple A17 Pro, 128GB, Dynamic Island",
-      price: 79990,
-      specs: [
-        "Camera: 48MP Main, 12MP Ultra-Wide",
-        "Battery: 20 hours video playback",
-        "Display: 6.1″ Super Retina XDR",
-      ],
-    },
-    {
-      id: 2,
-      name: "MacBook Pro",
-      image: "macbook.jpg",
-      details: "Apple M2 Pro, 16GB RAM, 512GB SSD",
-      price: 199990,
-      specs: [
-        "Display: 14″ Liquid Retina XDR",
-        "Processor: Apple M2 Pro",
-        "Battery: Up to 18 hours",
-      ],
-    },
-    {
-      id: 3,
-      name: "Apple Watch Series 9",
-      image: "watch.jpg",
-      details: "41mm Midnight Aluminum Case with Sport Band",
-      price: 41990,
-      specs: [
-        "Display: Always-On Retina",
-        "Battery: 18 hours",
-        "Sensors: Blood Oxygen, ECG, Heart Rate",
-      ],
-    },
-    {
-      id: 4,
-      name: "AirPods Pro (2nd Gen)",
-      image: "airpods.jpg",
-      details: "Active Noise Cancellation, MagSafe Charging Case",
-      price: 26990,
-      specs: [
-        "Audio: Adaptive Transparency",
-        "Battery: 6 hours (buds) + 30 hours (case)",
-        "Chip: Apple H2",
-      ],
-    },
-  ];
 
-  // Handle adding product to cart
+  // Fetch products from backend on mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/products");
+        setProducts(res.data);
+      } catch (err) {
+        console.error("Failed to fetch products:", err);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   const handleAddToCart = (product) => {
-    // If user is authenticated and product not already added
-    if (isAuthenticated && !addedItems.includes(product.id)) {
-      addToCart(product); // Add to global cart state
-      setAddedItems((prev) => [...prev, product.id]); // Mark as added
+    if (isAuthenticated && !addedItems.includes(product._id)) {
+      addToCart(product);
+      setAddedItems((prev) => [...prev, product._id]);
     }
   };
 
-  // Clear addedItems list if user logs out
   useEffect(() => {
     if (!isAuthenticated) {
       setAddedItems([]);
@@ -85,23 +50,54 @@ const Product = () => {
 
   return (
     <Container sx={{ mt: 4 }}>
+      {isAuthenticated && (
+        <Box display="flex" justifyContent="flex-end" mb={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/add-product")}
+          >
+            Add Product
+          </Button>
+        </Box>
+      )}
+
       <Grid container spacing={3}>
         {products.map((product) => (
-          <Grid item xs={12} sm={6} md={6} lg={4} key={product.id}>
-            <Card sx={{ height: "100%" }}>
-              {/* Product Image */}
-              <CardMedia
-                component="img"
-                image={product.image}
-                alt={product.name}
-                sx={{ height: 250, objectFit: "cover" }}
-              />
+          <Grid item xs={12} sm={6} md={6} lg={4} key={product._id}>
+            <Card
+              sx={{ height: "100%", display: "flex", flexDirection: "column" }}
+            >
+              <Box
+                sx={{
+                  position: "relative",
+                  width: "100%",
+                  height: 200,
+                  overflow: "hidden",
+                  borderTopLeftRadius: 8,
+                  borderTopRightRadius: 8,
+                  backgroundColor: "#f5f5f5",
+                }}
+              >
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                    display: "block",
+                  }}
+                  onError={(e) => {
+                    e.target.src =
+                      "https://via.placeholder.com/300x200?text=No+Image";
+                  }}
+                />
+              </Box>
 
               <CardContent>
-                {/* Product Name */}
                 <Typography variant="h6">{product.name}</Typography>
 
-                {/* Product Details - only visible to authenticated users */}
                 {isAuthenticated ? (
                   <Typography variant="body2" color="text.secondary">
                     {product.details}
@@ -112,33 +108,31 @@ const Product = () => {
                   </Typography>
                 )}
 
-                {/* Specs and price - only visible to authenticated users */}
                 {isAuthenticated && (
                   <Box mt={2}>
-                    {product.specs.map((line, idx) => (
+                    {product.specs?.map((line, idx) => (
                       <Typography key={idx} variant="body2">
                         {line}
                       </Typography>
                     ))}
                     <Typography variant="body1" fontWeight="bold">
-                      Price: ₹{product.price.toLocaleString()}
+                      Price: ₹{product.price?.toLocaleString()}
                     </Typography>
                   </Box>
                 )}
 
-                {/* Add to cart or message */}
                 <Box mt={2}>
                   {isAuthenticated ? (
                     <Button
                       variant={
-                        addedItems.includes(product.id)
+                        addedItems.includes(product._id)
                           ? "outlined"
                           : "contained"
                       }
                       onClick={() => handleAddToCart(product)}
-                      disabled={addedItems.includes(product.id)}
+                      disabled={addedItems.includes(product._id)}
                     >
-                      {addedItems.includes(product.id)
+                      {addedItems.includes(product._id)
                         ? "Added to Cart"
                         : "Add to Cart"}
                     </Button>

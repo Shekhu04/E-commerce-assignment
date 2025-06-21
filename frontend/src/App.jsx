@@ -6,6 +6,7 @@ import Login from "./components/login";
 import Profile from "./components/profile";
 import Navbar from "./components/navbar";
 import Cart from "./components/cart";
+import AddProduct from "./components/addProduct";
 
 import { AuthProvider, useAuth } from "./AuthContext";
 
@@ -53,6 +54,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="/add-product" element={<AddProduct />} />
       </Routes>
     </div>
   );

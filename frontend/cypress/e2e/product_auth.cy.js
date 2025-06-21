@@ -1,3 +1,42 @@
+describe("Signup Flow", () => {
+  beforeEach(() => {
+    cy.fixture("user").as("userData");
+    cy.fixture("authResponse").as("authRes");
+  });
+
+  it("signs up a new user and navigates to profile", function () {
+    // Intercept signup API call
+    cy.intercept("POST", "**/api/auth/signup", {
+      statusCode: 201,
+      body: this.authRes,
+    }).as("signup");
+
+    // Go to login page
+    cy.visit("/login");
+
+    // Switch to sign-up mode
+    cy.contains("Don't have an account? Sign Up").click();
+
+    // Fill form fields
+    cy.get('input[name="firstName"]').type(this.userData.firstName);
+    cy.get('input[name="lastName"]').type(this.userData.lastName);
+    cy.get('input[name="email"]').type(this.userData.email);
+    cy.get('input[name="password"]').type(this.userData.password);
+
+    // Ensure signup button is a <button> before clicking
+    cy.contains("Click to Sign Up")
+      .should("have.prop", "tagName", "BUTTON")
+      .click();
+
+    // Wait for signup request
+    cy.wait("@signup");
+
+    // Assert redirection and welcome message
+    cy.url().should("include", "/profile");
+    cy.contains("Welcome, Shikhar Gupta");
+  });
+});
+
 describe("Authenticated User Flow", () => {
   beforeEach(() => {
     cy.fixture("user").as("userData");
@@ -33,7 +72,7 @@ describe("Authenticated User Flow", () => {
     // Verify product name is shown
     cy.contains("iPhone 15").should("exist");
 
-    // Click 'Add to Cart' button and verify it's a <button>
+    // Click 'Add to Cart' button
     cy.contains("Add to Cart")
       .first()
       .should("have.prop", "tagName", "BUTTON")
@@ -72,42 +111,5 @@ describe("Unauthenticated User Product Access", () => {
     // Ensure price and specs are hidden
     cy.contains("Apple A17 Pro").should("not.exist");
     cy.contains("Price: ₹79,990").should("not.exist");
-  });
-});
-
-describe("Signup Flow", () => {
-  beforeEach(() => {
-    cy.fixture("user").as("userData");
-    cy.fixture("authResponse").as("authRes");
-  });
-
-  it("signs up a new user and navigates to profile", function () {
-    // Intercept signup API call
-    cy.intercept("POST", "**/api/auth/signup", {
-      statusCode: 201,
-      body: this.authRes,
-    }).as("signup");
-
-    // Go to login page
-    cy.visit("/login");
-
-    // Switch to sign-up mode
-    cy.contains("Don't have an account? Sign Up").click();
-
-    // Fill form fields
-    cy.get('input[name="firstName"]').type(this.userData.firstName);
-    cy.get('input[name="lastName"]').type(this.userData.lastName);
-    cy.get('input[name="email"]').type(this.userData.email);
-    cy.get('input[name="password"]').type(this.userData.password);
-
-    // Ensure signup button is a <button> before clicking
-    cy.contains("Click to Sign Up").should("have.prop", "tagName", "BUTTON").click();
-
-    // Wait for signup request
-    cy.wait("@signup");
-
-    // Assert redirection and welcome message
-    cy.url().should("include", "/profile");
-    cy.contains("Welcome, Shikhar Gupta");
   });
 });

@@ -10,7 +10,7 @@ authRouter.post("/signup", async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
   try {
-    if (!firstName || !lastName || !email || !password) {
+    if (!firstName || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -75,7 +75,7 @@ authRouter.post("/login", async (req, res) => {
   }
 });
 
-// LOGOUT (optional cookie-based example)
+// LOGOUT
 authRouter.post("/logout", (req, res) => {
   res.cookie("token", "", { expires: new Date(0), httpOnly: true });
   res.status(200).json({ message: "Logged out successfully" });
