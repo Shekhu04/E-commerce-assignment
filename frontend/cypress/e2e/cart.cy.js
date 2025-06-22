@@ -46,10 +46,22 @@ describe("Cart Page Functionality", () => {
     cy.contains("Cart").should("have.prop", "tagName", "A");
     cy.contains("Cart").click();
 
-    // Check product and total price
-    cy.contains("iPhone 15").should("exist");
-    cy.contains("Total: ₹").should("exist");
-    cy.contains("Checkout").should("exist");
+    // Check product and total price dynamically
+    cy.get("@cartProducts").then((products) => {
+      let total = 0;
+
+      products.forEach((product) => {
+        cy.contains(product.name).should("exist"); // Check product name
+        cy.contains(`₹${product.price}`).should("exist"); // Check product price
+        total += product.price;
+      });
+
+      // Check total price
+      cy.contains(`Total: ₹${total}`).should("exist");
+
+      // Check Checkout button
+      cy.contains("Checkout").should("exist");
+    });
   });
 
   it("3. Checkout clears the cart", function () {

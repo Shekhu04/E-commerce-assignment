@@ -33,7 +33,9 @@ describe("Signup Flow", () => {
 
     // Assert redirection and welcome message
     cy.url().should("include", "/profile");
-    cy.contains("Welcome, Shikhar Gupta");
+    cy.contains(
+      `Welcome, ${this.userData.firstName} ${this.userData.lastName}`
+    );
   });
 });
 
@@ -44,49 +46,30 @@ describe("Authenticated User Flow", () => {
   });
 
   it("logs in and accesses product page with cart functionality", function () {
-    // Intercept login API call
     cy.intercept("POST", "**/api/auth/login", {
       statusCode: 200,
       body: this.authRes,
     }).as("login");
 
-    // Visit login page
-    cy.visit("/login");
-
-    // Assert login button is a <button>
-    cy.contains("Click to Login").should("have.prop", "tagName", "BUTTON");
-
-    // Click login button
-    cy.contains("Click to Login").click();
-
-    // Wait for login request
+    // Use custom command that logs in and captures product info
+    cy.loginAndAddToCart();
     cy.wait("@login");
 
-    // Check user is redirected to profile
-    cy.url().should("include", "/profile");
-    cy.contains("Welcome, Shikhar Gupta");
+    // Access stored product data from alias
+    cy.get("@cartProducts").then(([product]) => {
+      const formattedPrice = `₹${product.price}`;
 
-    // Navigate to product page
-    cy.contains("Product").click();
+      // Navigate to Cart
+      cy.contains(/Cart \(\d+\)/).click();
 
-    // Verify product name is shown
-    cy.contains("iPhone 15").should("exist");
+      // Check product name and total price dynamically
+      cy.contains(product.name).should("exist");
+      cy.contains(formattedPrice).should("exist");
+      cy.contains(`Total: ${formattedPrice}`).should("exist");
+    });
 
-    // Click 'Add to Cart' button
-    cy.contains("Add to Cart")
-      .first()
-      .should("have.prop", "tagName", "BUTTON")
-      .click();
-
-    // Check button changes after adding to cart
-    cy.contains("Added to Cart").should("exist");
-
-    // Go to cart page
-    cy.contains(/Cart \(1\)/).click();
-
-    // Confirm cart contents
-    cy.contains("iPhone 15").should("exist");
-    cy.contains("Total: ₹79990").should("exist");
+    // Ensure Checkout button exists
+    cy.contains("Checkout").should("exist");
   });
 });
 

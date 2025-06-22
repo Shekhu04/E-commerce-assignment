@@ -6,59 +6,94 @@ import {
   Paper,
   Button,
   Avatar,
+  Stack,
 } from "@mui/material";
 import { useAuth } from "../AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
-  // Access logout function from AuthContext
   const { logout } = useAuth();
   const navigate = useNavigate();
 
-  // Retrieve user data from localStorage
-  const user = JSON.parse(localStorage.getItem("user"));
+  // Safely retrieve user data
+  let user = null;
+  try {
+    const raw = localStorage.getItem("user");
+    if (raw && raw !== "undefined") {
+      user = JSON.parse(raw);
+    }
+  } catch (err) {
+    console.error("Invalid user data:", err);
+  }
 
-  // Handle logout action
+  // Handle logout
   const handleLogout = () => {
-    logout(); // Clear auth context/session
-    localStorage.removeItem("token"); // Remove token from storage
-    localStorage.removeItem("user"); // Remove user data
-    navigate("/login"); // Redirect to login page
+    logout();
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
+
+  // Handle redirect to products
+  const goToProducts = () => {
+    navigate("/");
   };
 
   return (
     <Container maxWidth="sm" sx={{ mt: 6 }}>
-      {/* Profile card */}
-      <Paper elevation={4} sx={{ p: 4, textAlign: "center", borderRadius: 3 }}>
-        {/* User avatar with initials */}
+      <Paper
+        elevation={6}
+        sx={{
+          p: 4,
+          textAlign: "center",
+          borderRadius: 4,
+          background: "#f5f5f5",
+        }}
+      >
+        {/* Avatar */}
         <Avatar
           sx={{
             bgcolor: "primary.main",
-            width: 64,
-            height: 64,
+            width: 80,
+            height: 80,
             mx: "auto",
             mb: 2,
+            fontSize: 32,
           }}
         >
-          {user?.firstName?.[0] || "U"}
+          {user?.firstName?.[0]?.toUpperCase() || "U"}
         </Avatar>
 
-        {/* Welcome message with user name */}
+        {/* User Name */}
         <Typography variant="h5" gutterBottom>
           Welcome, {user?.firstName} {user?.lastName}
         </Typography>
 
-        {/* Display user email */}
-        <Typography variant="body1" color="textSecondary" gutterBottom>
+        {/* Email */}
+        <Typography variant="body1" color="text.secondary">
           Email: {user?.email}
         </Typography>
 
-        {/* Logout button */}
-        <Box mt={4}>
-          <Button variant="contained" color="error" onClick={handleLogout}>
+        {/* Actions */}
+        <Stack spacing={2} mt={4} direction="column" alignItems="center">
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={goToProducts}
+          >
+            Go to Products
+          </Button>
+
+          <Button
+            variant="outlined"
+            color="error"
+            fullWidth
+            onClick={handleLogout}
+          >
             Logout
           </Button>
-        </Box>
+        </Stack>
       </Paper>
     </Container>
   );
